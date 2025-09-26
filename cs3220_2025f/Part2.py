@@ -5,9 +5,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import networkx as nx
-#%matplotlib inline
+from pyvis.network import Network
 
-path = 'cs3220_2025f'
+path = 'data'
 
 json_files = [os.path.join(root, name) 
               for root, dirs, files in os.walk(path) 
@@ -144,8 +144,6 @@ for house in GameOfThronesHouses:
         # add the house's name as a node to the graph g (houses's strength values is used as a node's size)
         g.add_node(house.name, size=house.getStrength())
         
-for node, attributes in g.nodes(data=True): # run this code to check your code above
-    print(f"Node: {node}, Attributes: {attributes}")
 
 for house in GameOfThronesHouses:
     if house.name!="Include":
@@ -153,16 +151,39 @@ for house in GameOfThronesHouses:
         for character in house: #goes through every character in the house to add them one by one
             g.add_node(character)
 
-for node, attributes in g.nodes(data=True): # run this code to check your code above
-    print(f"Node: {node}, Attributes: {attributes}")
-
 myEdges=[]
 
 for house in GameOfThronesHouses:
     if house.name!="Include":
         for person in house:
-            myEdges.append(person, house)
+            pairs = (person, house._name)
+            myEdges.append(pairs) #need to append the person and house as connections
             
 
-print("Connections between a House and its family members:") # run this code to check your code above
-myEdges
+#print("Connections between a House and its family members:") # run this code to check your code above
+#print(myEdges)
+
+g.add_edges_from(myEdges)
+
+GameOfThronesNet = Network( heading = "test",
+                bgcolor ="#242020",
+                font_color = "white",
+                height = "1000px",
+                width = "100%",
+                directed = False,
+                notebook=True,
+                cdn_resources = "remote")
+
+GameOfThronesNet.from_nx(g)
+
+for node in GameOfThronesNet.nodes:
+    if node["id"] in GameOfThronesHouses:
+        # Convert RGB to hexadecimal string
+        node["color"] = '#%02x%02x%02x' % nodeColors[node["id"]]
+    else:
+        for house in GameOfThronesHouses: 
+            if house.name !="Include":# apple the coloer of the House to this family member
+                if node["id"] in house:
+                    node["color"] = '#%02x%02x%02x' % nodeColors[house.name]
+
+GameOfThronesNet.show("GameOfThronesNet.html", notebook=False)
