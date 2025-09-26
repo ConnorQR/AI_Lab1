@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
-import networkx as nx
 from pyvis.network import Network
+import networkx as nx
 
 pd.set_option('display.max_rows',None)
 pd.set_option('display.max_columns',None)
@@ -99,3 +99,4 @@ for node in net5kings.nodes:
 net5kings.nodes
 
 net5kings.show("lab1-task1-net5kings.html", notebook = False)
+
