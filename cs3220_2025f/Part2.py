@@ -7,20 +7,7 @@ import seaborn as sns
 import networkx as nx
 import streamlit as st
 from pyvis.network import Network
-"""
-path = 'data'
 
-json_files = [os.path.join(root, name) 
-              for root, dirs, files in os.walk(path) 
-              for name in files 
-              if name.endswith((".json"))] #If we needed to read several files extensions: if name.endswith((".ext1", ".ext2"))
-print('Number of JSON files ready to be loaded: ' + str(len(json_files)))
-
-json_files
-print('Path to the first file: '+json_files[0])
-with (open(json_files[0]) as f):
-    json_data = json.load(f)
-"""
 file_path = 'cs3220_2025f/data/game-of-thrones-characters-groups.json'
 with open(file_path, 'r') as file:
     json_data=json.load(file)
@@ -93,26 +80,26 @@ for data in json_data['groups']:
   house=Dynasty(data['name'])
   for character in data['characters']:
     house.append(character) 
-  print(house)
-  print("Our members:")
-  for person in house:
-    print(person)
-  print(f"We have {house.getStrength()} family members!!!" + "\n") 
+  #print(house)
+  #print("Our members:")
+  #for person in house:
+  #  print(person)
+  #print(f"We have {house.getStrength()} family members!!!" + "\n") 
 #test 2
 corpus_data=json_data['groups']
 GameOfThronesHouses=GameOfThronesGraph(corpus_data)
-for house in GameOfThronesHouses:
-   print(house)
+#for house in GameOfThronesHouses:
+#   print(house)
 #test 3
 visualisationData={}
 legendData=[]
 for house in GameOfThronesHouses:
-  print(house)
-  print(f"Strength: {house.getStrength()}")
+#  print(house)
+#  print(f"Strength: {house.getStrength()}")
   visualisationData[house.name]=house.getStrength()
   legendData.append(house.name)
-visualisationData
-legendData
+#visualisationData
+#legendData
 
 #Configure your x and y values from the dictionary:
 x= list(visualisationData.keys())
@@ -130,7 +117,7 @@ ax.set(xlabel='Houses',
 
 plt.xticks(rotation=45)
 #display barplot
-plt.show()
+#plt.show()
 
 g=nx.Graph()
 
@@ -163,14 +150,10 @@ for house in GameOfThronesHouses:
         for person in house:
             pairs = (person, house._name)
             myEdges.append(pairs) #need to append the person and house as connections
-            
-
-#print("Connections between a House and its family members:") # run this code to check your code above
-#print(myEdges)
 
 g.add_edges_from(myEdges)
 
-GameOfThronesNet = Network( heading = "test",
+GameOfThronesNet = Network( heading = "Lab 1 Part 2",
                 bgcolor ="#242020",
                 font_color = "white",
                 height = "1000px",
@@ -191,4 +174,21 @@ for node in GameOfThronesNet.nodes:
                 if node["id"] in house:
                     node["color"] = '#%02x%02x%02x' % nodeColors[house.name]
 
-GameOfThronesNet.show("GameOfThronesNet.html", notebook=False)
+#GameOfThronesNet.show("GameOfThronesNet.html", notebook=False)
+
+tab1, tab2, tab3 = st.tabs(["Tab 1", "Tab 2", "Tab 3"])
+with tab1:
+    st.header("Game of Thrones Houses")
+    st.write("Game of Thrones Houses: ")
+    for house in GameOfThronesHouses:
+        print(house + ": Strength: " + house.getStrength())
+    plt.show()
+with tab2:
+    st.header("Members of Houses")
+    print(house + "Our Members:")
+    for person in house:
+        print(person)
+    print(f"Strength: {house.getStrength()}")
+with tab3:
+    st.header("Graph for Game of Thrones Houses")
+    GameOfThronesNet.show("GameOfThronesNet.html", notebook=False)
